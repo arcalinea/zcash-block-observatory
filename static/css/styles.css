@@ -1,3 +1,15 @@
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  padding-bottom: 80px;
+}
+.container {
+  min-height: 100%;
+  position: relative;
+}
+
 nav {
   background-color: #221F53 !important;
   padding: 0.5em 0;
@@ -15,6 +27,10 @@ nav {
 .footer {
   background-color: #221F53;
   margin-top: 3em;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
 }
 
 .footer ul li {

@@ -101,6 +101,10 @@ def show_block():
         print 'except'
         return ('', 204)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 if __name__ == '__main__':
     cache = SimpleCache()
     cache.set('blocks', get_blocks(), timeout=3600)
