@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+  {% block content %}
+  <h4>Transaction</h4>
+    <table class="table table-striped">
+      <tr>
+        <th>Block hash of Tx</th>
+        <th>Txid</th>
+      </tr>
+      <tr>
+        <td><a href="/block?hash={{ tx['blockhash'] }}" style="text-decoration: none;">{{ tx['blockhash'] }}</a></td>
+        <td>{{ tx['txid'] }}</td>
+      </tr>
+   </table>
+
+   <table class="table table-striped">
+     <tr>
+       <th>Version</th>
+       <td>{{ tx['version'] }}</td>
+     </tr>
+     <tr>
+       <th>Locktime</th>
+       <td>{{ tx['locktime'] }}</td>
+     </tr>
+     <tr>
+       <th>Confirmations</th>
+       <td>{{ tx['confirmations'] }}</td>
+     </tr>
+     <tr>
+       <th>Time</th>
+       <td>{{ tx['time'] }}</td>
+     </tr>
+     <tr>
+       <th>Blocktime</th>
+       <td>{{ tx['blocktime'] }}</td>
+     </tr>
+     <tr>
+       <th>Inputs</th>
+       <td>
+         {% for vin in tx['vin'] %}
+          {{ vin['vout'] }}: <a href="/tx?id={{ vin['txid'] }}" style="text-decoration: none;">{{ vin['txid'] }}</a><br />
+         {% endfor %}
+       </td>
+     </tr>
+     <tr>
+       <th>Outputs</th>
+       <td>
+         {% for vout in tx['vout'] %}
+          {{ vout['n'] }}: {{ vout['value'] }}<br />
+         {% endfor %}
+       </td>
+     </tr>
+     <tr>
+       <th>Joinsplits</th>
+       <td>
+         {% for join in tx['vjoinsplit'] %}
+           placeholder for joinsplit<br />
+         {% endfor %}
+       </td>
+     </tr>
+  </table>
+   <a href="/"><button class="btn btn-default">Return to main page</button></a>
+  {% endblock %}

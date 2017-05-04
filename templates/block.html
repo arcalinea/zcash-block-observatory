@@ -1,5 +1,6 @@
 {% extends "base.html" %}
   {% block content %}
+  <h4>Block</h4>
     <table class="table table-striped">
       <tr>
         <th>height</th>
@@ -29,7 +30,7 @@
         <th>txs</th>
         <td>
         {% for tx in block['tx'] %}
-        {{ tx['tx'] }}<br>
+        <a href="/tx?id={{ tx['tx'] }}" style="text-decoration: none;">{{ tx['tx'] }}</a><br>
         {% endfor %}
         </td>
       </tr>
@@ -59,7 +60,7 @@
       </tr>
       <tr>
         <th>previousblockhash</th>
-        <td><a href="/block?search={{ block['previousblockhash'] }}" style="text-decoration: none;">{{ block['previousblockhash'] }}</td>
+        <td><a href="/block?hash={{ block['previousblockhash'] }}" style="text-decoration: none;">{{ block['previousblockhash'] }}</td>
       </tr>
       <tr>
         <th>nextblockhash</th>

@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import Flask, g, abort, jsonify, render_template, request, Response, session
+from flask import Flask, g, abort, jsonify, render_template, request, Response, session, redirect
 import config, json, os, re, sqlite3, sys, time
 from werkzeug.contrib.cache import SimpleCache
+from displaytx import get_tx
 
 db_file = 'blocks.sqlite'
 app = Flask(__name__)
 app.config.from_object(config.FlaskConfig)
+
+txtest = 'ed3a82da9ec2c12ff7e05debf6fe849f6c91e442a844ddbc52048627a27a51e1'
 
 def find_block_by_tx(txid):
     conn = sqlite3.connect(db_file)
@@ -17,6 +20,7 @@ def find_block_by_tx(txid):
     c.execute('SELECT hash FROM tx WHERE tx=:txid', {"txid": txid})
     block_hash = c.fetchone()
     return str(block_hash['hash'])
+
 
 def get_single_block(block_hash):
     conn = sqlite3.connect(db_file)
@@ -81,25 +85,48 @@ def index(height='top'):
         pass
     return render_template('blocks.html', blocks = blocks)
 
-@app.route('/block', methods = ['GET', 'POST'])
-def show_block():
+@app.route('/search', methods = ['POST'])
+def search():
     print 'search: ', request.values.get('search')
     search_string = validate_input(request.values.get('search').strip().lower())
     if search_string is None:
-        print 'blockhash search none'
+        print "Search returned nothing"
+        return ('', 204)
+    if search_string[:3] == '000':
+        return redirect('/block?hash=' + search_string)
+    else:
+        return redirect('/tx?id=' + search_string)
+
+
+@app.route('/block', methods = ['GET'])
+def show_block():
+    block_hash = request.values.get('hash')
+    block = get_single_block(block_hash)
+    return render_template('block.html', block = block)
+
+@app.route('/tx', methods = ['GET'])
+def show_tx():
+    txid = request.values.get('id')
+    print 'txid: ', txid
+    # search_string = validate_input(request.values.get('id').strip().lower())
+    if txid is None:
+        print 'tx search none'
         return ('', 204)
     try:
-        block = get_single_block(search_string)
-        return render_template('block.html', block = block)
-    except:
-        pass
-    try:
-        block_hash = find_block_by_tx(search_string)
-        block = get_single_block(block_hash)
-        return render_template('block.html', block = block)
+        tx = find_tx(txid)
+        return render_template('tx.html', tx = tx)
     except:
         print 'except'
         return ('', 204)
+
+def find_tx(txid):
+    print "In find_tx:", request.args.get
+    print "In find_tx:", request.values
+    tx = get_tx(txtest)
+    print "TX in FIND_TX", dict(tx)
+    return tx
+    # Will have to query the rpc interface for tx info
+
 
 @app.route('/about')
 def about():
